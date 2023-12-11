@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,20 +16,24 @@
     <button onclick="downloadRecording()" id="downloadButton" style="display: none;">Download Recording</button>
     <video controls id="recordedVideo" style="display: none;"></video>
 
-    <!-- Include JavaScript for Recording -->
     <script>
         let mediaRecorder;
         let recordedChunks = [];
         const recordedVideo = document.getElementById('recordedVideo');
         const downloadButton = document.getElementById('downloadButton');
 
-        // Replace 'your-channel' with your Twitch channel name
         new Twitch.Embed("twitchEmbed", { width: 854, height: 480, channel: "your-channel" });
 
         async function startRecording() {
             const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
             const video = document.getElementById('twitch-embed');
+
+            if (!video) {
+                console.error("Twitch embed element not found.");
+                return;
+            }
+
+            const ctx = canvas.getContext('2d');
             canvas.width = video.offsetWidth;
             canvas.height = video.offsetHeight;
 
@@ -50,7 +55,6 @@
                 recordedChunks = [];
             };
 
-            // Draw the video onto the canvas
             function drawCanvas() {
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                 requestAnimationFrame(drawCanvas);
@@ -93,3 +97,4 @@
     </script>
 </body>
 </html>
+
