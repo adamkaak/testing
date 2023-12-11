@@ -3,31 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Website</title>
-    <style>
-        body {
-            background-image: url('1337873.jpg');
-            background-size: cover;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        #twitch-embed {
-            width: 80%;
-            height: 80%;
-        }
-    </style>
+    <title>Record Page</title>
+    <!-- Include Twitch Embed Script -->
+        <iframe src="https://player.twitch.tv/?channel=frote7&parent=adamkaak.github.io" frameborder="0" allowfullscreen="true" scrolling="no" height="378" width="620"></iframe>
 </head>
 <body>
-    <div id="twitch-embed">
-        <iframe src="https://player.twitch.tv/?channel=frote7&parent=adamkaak.github.io" frameborder="0" allowfullscreen="true" scrolling="no" height="378" width="620"></iframe>
-    </div>
-        <div id="twitch-embed">
-        <iframe src="https://player.twitch.tv/?channel=gorggaming44&parent=adamkaak.github.io" frameborder="0" allowfullscreen="true" scrolling="no" height="378" width="620"></iframe>
-    </div>
+    <div id="twitchEmbed"></div>
+    <img src="image1.jpg" alt="Image 1">
+    <img src="image2.jpg" alt="Image 2">
+    <button onclick="toggleRecording()">Toggle Recording</button>
+    <button onclick="downloadRecording()" id="downloadButton" style="display: none;">Download Recording</button>
+    <video controls id="recordedVideo" style="display: none;"></video>
+
+    <!-- Include JavaScript for Recording -->
+    <script>
+        let mediaRecorder;
+        let recordedChunks = [];
+        const recordedVideo = document.getElementById('recordedVideo');
+        const downloadButton = document.getElementById('downloadButton');
+
+        // Replace 'your-channel' with your Twitch channel name
+        new Twitch.Embed("twitchEmbed", { width: 854, height: 480, channel: "your-channel" });
+
+        function startRecording() {
+            const stream = document.querySelector('body').captureStream();
+            mediaRecorder = new MediaRecorder(stream);
+
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0) {
+                    recordedChunks.push(e.data);
+                }
+            };
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                recordedVideo.src = url;
+                recordedVideo.style.display = 'block';
+                downloadButton.style.display = 'block';
+
+                recordedChunks = [];
+            };
+
+            mediaRecorder.start();
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+            }
+        }
+
+        function toggleRecording() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        }
+
+        function downloadRecording() {
+            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'recorded-video.webm';
+            a.click();
+        }
+    </script>
 </body>
 </html>
