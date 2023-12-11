@@ -27,8 +27,12 @@
 
         async function startRecording() {
             const canvas = document.createElement('canvas');
-            const stream = canvas.captureStream();
-            mediaRecorder = new MediaRecorder(stream);
+            const ctx = canvas.getContext('2d');
+            const video = document.getElementById('twitch-embed');
+            canvas.width = video.offsetWidth;
+            canvas.height = video.offsetHeight;
+
+            mediaRecorder = new MediaRecorder(canvas.captureStream());
 
             mediaRecorder.ondataavailable = (e) => {
                 if (e.data.size > 0) {
@@ -46,6 +50,13 @@
                 recordedChunks = [];
             };
 
+            // Draw the video onto the canvas
+            function drawCanvas() {
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                requestAnimationFrame(drawCanvas);
+            }
+
+            drawCanvas();
             mediaRecorder.start();
         }
 
@@ -64,6 +75,11 @@
         }
 
         function downloadRecording() {
+            if (recordedChunks.length === 0) {
+                alert('No recording available to download.');
+                return;
+            }
+
             const blob = new Blob(recordedChunks, { type: 'video/webm' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
