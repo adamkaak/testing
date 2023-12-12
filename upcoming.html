@@ -1,0 +1,78 @@
+<h1>Upcoming matches</h1>
+<h2>Wednesday 13/12/2023 </h2>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Player 1</th>
+      <th scope="col">Player 2</th>
+      <th scope="col">Time</th>
+      <th scope="col">Game</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Kolapro</td>
+      <td>DarLizzard</td>
+      <td id="user1Time"></td>
+      <td>Crash</td>
+    </tr>
+    <tr>
+      <td>Lopsa</td>
+      <td>Rexy</td>
+      <td id="user2Time"></td>
+      <td>Mario</td>
+    </tr>
+  </tbody>
+</table>
+
+<p id="time"></p>
+
+<script>
+  function displayTime() {
+    // Get the current date and time in UTC
+    var utcDate = new Date();  
+
+    // Get the user's timezone offset in minutes
+    var timezoneOffset = utcDate.getTimezoneOffset();
+
+    // Calculate the local time in milliseconds
+    var localTime = utcDate.getTime() - (timezoneOffset * 60000);
+
+    // Create a new Date object for the local time
+    var localDate = new Date(localTime);
+
+    // Display the time in a specific format (adjust as needed)
+    var timeString = localDate.toLocaleTimeString();
+
+    // Update the content of the HTML element with id="time"
+    document.getElementById("time").innerText = "Current time in your timezone: " + timeString;
+  }
+
+  // Call the displayTime function when the page loads
+  window.onload = displayTime;
+</script>
+
+</body>
+</html>
+
+
+    // Calculate the local time in milliseconds
+    var localTime = specificUtcTime.getTime() - (timezoneOffset * 60000);
+
+    // Create a new Date object for the local time
+    var localDate = new Date(localTime);
+
+    // Display the specific time in a specific format (adjust as needed)
+    var timeString = localDate.toLocaleTimeString();
+
+    // Update the content of the specified HTML element
+    document.getElementById(targetElementId).innerText = timeString;
+  }
+
+  // Call the displaySpecificTime function with specific time strings and target element IDs
+  window.onload = function() {
+    displaySpecificTime('2023-12-12T17:00:00Z', 'user1Time');
+    displaySpecificTime('2023-12-12T18:30:00Z', 'user2Time');
+    // Add more rows and calls as needed
+  };
+</script>
